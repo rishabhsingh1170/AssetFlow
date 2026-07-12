@@ -1,8 +1,6 @@
 -- AssetFlow Supabase/PostgreSQL schema
 -- Run in Supabase SQL editor or through a migration tool.
 
-begin;
-
 create extension if not exists pgcrypto;
 create extension if not exists btree_gist;
 
@@ -50,9 +48,13 @@ exception when duplicate_object then null;
 end $$;
 
 do $$ begin
-  create type booking_status as enum ('upcoming', 'ongoing', 'completed', 'cancelled');
+  create type booking_status as enum ('requested', 'approved', 'rejected', 'upcoming', 'ongoing', 'completed', 'cancelled');
 exception when duplicate_object then null;
 end $$;
+
+alter type booking_status add value if not exists 'requested';
+alter type booking_status add value if not exists 'approved';
+alter type booking_status add value if not exists 'rejected';
 
 do $$ begin
   create type maintenance_priority as enum ('low', 'medium', 'high', 'critical');
@@ -250,7 +252,7 @@ create table if not exists resource_bookings (
   department_id uuid references departments(id) on delete set null,
   starts_at timestamptz not null,
   ends_at timestamptz not null,
-  status booking_status not null default 'upcoming',
+  status booking_status not null default 'requested',
   purpose text,
   cancelled_by uuid references app_users(id) on delete set null,
   cancelled_at timestamptz,
@@ -269,7 +271,7 @@ alter table resource_bookings
     asset_id with =,
     tstzrange(starts_at, ends_at, '[)') with &&
   )
-  where (status in ('upcoming', 'ongoing'));
+  where (status in ('requested', 'approved', 'upcoming', 'ongoing'));
 
 create index if not exists resource_bookings_asset_time_idx
   on resource_bookings using gist (asset_id, tstzrange(starts_at, ends_at, '[)'));
@@ -673,7 +675,7 @@ begin
       select 1 from resource_bookings
       where asset_id = new.asset_id
         and id <> new.id
-        and status in ('upcoming', 'ongoing')
+        and status in ('requested', 'approved', 'upcoming', 'ongoing')
     ) then
       update assets
       set status = 'available', updated_at = now()
@@ -741,7 +743,7 @@ select
   count(*) filter (where status = 'available') as assets_available,
   count(*) filter (where status = 'allocated') as assets_allocated,
   count(*) filter (where status = 'under_maintenance') as assets_under_maintenance,
-  (select count(*) from resource_bookings where status in ('upcoming', 'ongoing')) as active_bookings,
+  (select count(*) from resource_bookings where status in ('requested', 'approved', 'upcoming', 'ongoing')) as active_bookings,
   (select count(*) from asset_transfer_requests where status = 'requested') as pending_transfers,
   (select count(*) from asset_allocations where status = 'active' and expected_return_at between now() and now() + interval '7 days') as upcoming_returns,
   (select count(*) from active_allocation_overdues) as overdue_returns
@@ -773,5 +775,3 @@ set search_path = public
 as $$
   select role from app_users where id = auth.uid()
 $$;
-
-commit;
