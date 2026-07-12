@@ -1,4 +1,4 @@
-import { login, logout, getMe, signup } from "../../../../api/auth.api";
+import { supabase } from "../../../../api/supabase";
 import {
   loginStart,
   loginSuccess,
@@ -13,24 +13,27 @@ export const authService = {
   login: async (credentials, dispatch) => {
     dispatch(loginStart());
     try {
-      const response = await login(credentials);
-      
-      const token = response.data?.token || response.data?.accessToken || response.data?.data?.token;
-      const user = response.data?.user || response.data?.data?.user || response.data;
-      const profile = response.data?.profile || response.data?.data?.profile || user;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: credentials.email,
+        password: credentials.password,
+      });
 
-      if (token) {
-        localStorage.setItem("token", token);
-      }
-      
-      dispatch(loginSuccess({ user, profile }));
-      return { user, profile };
+      if (error) throw error;
+
+      // Query profiles table from Supabase for role checks
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+
+      // Default role fallback to employee if profile isn't populated yet
+      const userProfile = profile || { role: "employee", full_name: data.user.email };
+
+      dispatch(loginSuccess({ user: data.user, profile: userProfile }));
+      return { user: data.user, profile: userProfile };
     } catch (err) {
-      const errMsg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Login failed";
+      const errMsg = err.message || "Login failed";
       dispatch(loginFailure(errMsg));
       throw new Error(errMsg);
     }
@@ -39,25 +42,25 @@ export const authService = {
   signup: async (userData, dispatch) => {
     dispatch(loginStart());
     try {
-      const response = await signup(userData);
-      
-      const token = response.data?.token || response.data?.accessToken || response.data?.data?.token;
-      const user = response.data?.user || response.data?.data?.user || response.data;
-      const profile = response.data?.profile || response.data?.data?.profile || user;
+      const { data, error } = await supabase.auth.signUp({
+        email: userData.email,
+        password: userData.password,
+        options: {
+          data: {
+            full_name: userData.fullName,
+          },
+        },
+      });
 
-      if (token) {
-        localStorage.setItem("token", token);
-        dispatch(loginSuccess({ user, profile }));
-      } else {
-        dispatch(loginSuccess({ user, profile }));
-      }
-      return { user, profile };
+      if (error) throw error;
+
+      const user = data.user;
+      const profile = data.session ? { role: "employee", full_name: userData.fullName } : null;
+
+      dispatch(loginSuccess({ user: data.session ? user : null, profile }));
+      return { user, session: data.session };
     } catch (err) {
-      const errMsg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Signup failed";
+      const errMsg = err.message || "Signup failed";
       dispatch(loginFailure(errMsg));
       throw new Error(errMsg);
     }
@@ -65,12 +68,11 @@ export const authService = {
 
   logout: async (dispatch) => {
     try {
-      await logout();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
     } catch (e) {
-      console.warn("Backend logout failed, clearing local session", e);
+      console.warn("Supabase logout request error:", e);
     } finally {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
       dispatch(logoutSuccess());
     }
   },
@@ -78,17 +80,35 @@ export const authService = {
   getCurrentUser: async (dispatch) => {
     dispatch(loadUserStart());
     try {
-      const response = await getMe();
-      const user = response.data?.user || response.data?.data?.user || response.data;
-      const profile = response.data?.profile || response.data?.data?.profile || user;
-      dispatch(loadUserSuccess({ user, profile }));
-      return { user, profile };
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      
+      if (!session) {
+        dispatch(loadUserFailure());
+        return null;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+      const userProfile = profile || { role: "employee", full_name: session.user.email };
+      dispatch(loadUserSuccess({ user: session.user, profile: userProfile }));
+      return { user: session.user, profile: userProfile };
     } catch (err) {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
       dispatch(loadUserFailure());
       throw err;
     }
+  },
+
+  forgotPassword: async (email) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/login",
+    });
+    if (error) throw error;
+    return data;
   },
 };
 

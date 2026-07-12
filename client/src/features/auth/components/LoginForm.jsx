@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 
-export const LoginForm = ({ onSubmit, submitLoading, error }) => {
+export const LoginForm = ({ onSubmit, submitLoading, error, onForgotPassword }) => {
   const {
     register,
     handleSubmit,
@@ -46,7 +46,10 @@ export const LoginForm = ({ onSubmit, submitLoading, error }) => {
           {...register("password", { required: "Password is required" })}
         />
         <div className="text-right">
-          <span className="text-xs text-text-muted hover:text-text-primary cursor-pointer transition-colors select-none">
+          <span
+            onClick={onForgotPassword}
+            className="text-xs text-text-muted hover:text-text-primary cursor-pointer transition-colors select-none"
+          >
             Forgot password
           </span>
         </div>

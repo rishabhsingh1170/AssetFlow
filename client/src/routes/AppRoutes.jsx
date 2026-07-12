@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
+import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import OrganizationSetupPage from "../features/organization/pages/OrganizationSetupPage";
 import LoginPage from "../features/auth/pages/LoginPage";
@@ -32,25 +33,27 @@ export const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Protected Dashboard Pathway */}
-      <Route element={<DashboardLayout />}>
-        {/* Default route redirects to dashboard */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        
-        <Route path="/dashboard" element={<DashboardPage />} />
-        
-        {/* Organization setup page, admin restricted */}
-        <Route element={<RoleRoute allowedRoles={["admin"]} />}>
-          <Route path="/organization-setup" element={<OrganizationSetupPage />} />
-        </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          {/* Default route redirects to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          
+          <Route path="/dashboard" element={<DashboardPage />} />
+          
+          {/* Organization setup page, admin restricted */}
+          <Route element={<RoleRoute allowedRoles={["admin"]} />}>
+            <Route path="/organization-setup" element={<OrganizationSetupPage />} />
+          </Route>
 
-        {/* Placeholders for sidebar links */}
-        <Route path="/assets" element={<PagePlaceholder title="Assets" />} />
-        <Route path="/allocation-transfer" element={<PagePlaceholder title="Allocation & Transfer" />} />
-        <Route path="/resource-booking" element={<PagePlaceholder title="Resource Booking" />} />
-        <Route path="/maintenance" element={<PagePlaceholder title="Maintenance" />} />
-        <Route path="/audit" element={<PagePlaceholder title="Audit" />} />
-        <Route path="/reports" element={<PagePlaceholder title="Reports" />} />
-        <Route path="/notifications" element={<PagePlaceholder title="Notifications" />} />
+          {/* Placeholders for sidebar links */}
+          <Route path="/assets" element={<PagePlaceholder title="Assets" />} />
+          <Route path="/allocation-transfer" element={<PagePlaceholder title="Allocation & Transfer" />} />
+          <Route path="/resource-booking" element={<PagePlaceholder title="Resource Booking" />} />
+          <Route path="/maintenance" element={<PagePlaceholder title="Maintenance" />} />
+          <Route path="/audit" element={<PagePlaceholder title="Audit" />} />
+          <Route path="/reports" element={<PagePlaceholder title="Reports" />} />
+          <Route path="/notifications" element={<PagePlaceholder title="Notifications" />} />
+        </Route>
       </Route>
 
       {/* Fallback route */}
