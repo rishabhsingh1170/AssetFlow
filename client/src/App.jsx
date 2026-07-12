@@ -1,17 +1,17 @@
-import './App.css';
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import AppRoutes from "./routes/AppRoutes";
+import store from "./store";
+import "./App.css";
 
 function App() {
   return (
-    <main className="app-shell">
-      <section className="welcome-panel">
-        <p className="eyebrow">AssetFlow</p>
-        <h1>React client is ready.</h1>
-        <p>
-          Start building the asset management interface from this Vite-powered
-          React app.
-        </p>
-      </section>
-    </main>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </Provider>
   );
 }
 

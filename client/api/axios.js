@@ -1,14 +1,14 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('assetflow_token');
+  const token = localStorage.getItem("assetflow_token") || localStorage.getItem("token");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -21,7 +21,7 @@ api.interceptors.response.use(
   (response) => response.data,
   (error) => {
     const message =
-      error.response?.data?.message || error.message || 'Request failed';
+      error.response?.data?.message || error.message || "Request failed";
 
     return Promise.reject({
       message,
@@ -29,7 +29,7 @@ api.interceptors.response.use(
       errors: error.response?.data?.errors,
       data: error.response?.data,
     });
-  },
+  }
 );
 
 export default api;
