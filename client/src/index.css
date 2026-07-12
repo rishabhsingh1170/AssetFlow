@@ -1,43 +1,96 @@
+@import "@fontsource-variable/archivo";
+@import "@fontsource-variable/inter";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 @import "tailwindcss";
 
 @theme {
-  --color-surface-0: #0d0f13;
-  --color-surface-1: #12151a;
-  --color-surface-2: #1a1d24;
-  --color-surface-3: #232730;
+  /* Surfaces: warm paper background, white cards */
+  --color-surface-0: #f6f4ef;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f8f6f1;
+  --color-surface-3: #ece9e1;
+  --color-surface-ink: #1c1917;
 
-  --color-border: #242832;
-  --color-border-strong: #30353f;
+  --color-border: #e7e2d9;
+  --color-border-strong: #d6cfc2;
 
-  --color-text-primary: #f4f4f2;
-  --color-text-secondary: #9a9ea8;
-  --color-text-muted: #6a6e78;
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #79716b;
+  --color-text-inverse: #faf9f7;
 
-  --color-accent-50: #faeeda;
-  --color-accent-100: #fac775;
-  --color-accent-200: #ef9f27;
-  --color-accent-400: #e8a33d;
-  --color-accent-600: #854f0b;
-  --color-accent-800: #633806;
-  --color-accent-900: #412402;
+  /* Amber ramp. 400 = fill paired with ink text; 600 = text-safe accent.
+     Never place white text on 400 or 500. */
+  --color-accent-50: #fdf6e7;
+  --color-accent-100: #fbe9c6;
+  --color-accent-200: #f7d38a;
+  --color-accent-300: #f5c045;
+  --color-accent-400: #f59e0b;
+  --color-accent-500: #d97706;
+  --color-accent-600: #b45309;
+  --color-accent-700: #92400e;
+  --color-accent-800: #78350f;
+  --color-accent-900: #5f2b0c;
 
-  --color-status-available: #5dcaa5;
-  --color-status-allocated: #7f9ce8;
-  --color-status-reserved: #c9a84c;
-  --color-status-maintenance: #e8a33d;
-  --color-status-lost: #e0645a;
-  --color-status-retired: #6a6e78;
-  --color-status-disposed: #454951;
+  /* Status triplets: text / bg tint / border. Keys match DB enum values. */
+  --color-status-available: #0f766e;
+  --color-status-available-bg: #e6f4f2;
+  --color-status-available-border: #99d5cd;
 
-  --color-success: #5dcaa5;
-  --color-warning: #e8a33d;
-  --color-danger: #e0645a;
-  --color-info: #7f9ce8;
+  --color-status-allocated: #1d4ed8;
+  --color-status-allocated-bg: #e8eefc;
+  --color-status-allocated-border: #b6c8f5;
+
+  --color-status-reserved: #6d28d9;
+  --color-status-reserved-bg: #f1ebfd;
+  --color-status-reserved-border: #d4c5f4;
+
+  --color-status-maintenance: #b45309;
+  --color-status-maintenance-bg: #fdeed3;
+  --color-status-maintenance-border: #f0c987;
+
+  --color-status-lost: #b91c1c;
+  --color-status-lost-bg: #fdebe9;
+  --color-status-lost-border: #f2b8b2;
+
+  --color-status-retired: #57534e;
+  --color-status-retired-bg: #f0eeea;
+  --color-status-retired-border: #d8d2c8;
+
+  --color-status-disposed: #44403c;
+  --color-status-disposed-bg: #e7e4df;
+  --color-status-disposed-border: #c9c2b8;
+
+  /* Semantic triplets */
+  --color-success: #047857;
+  --color-success-bg: #e6f5ef;
+  --color-success-border: #a3dcc6;
+
+  --color-warning: #b45309;
+  --color-warning-bg: #fdeed3;
+  --color-warning-border: #f0c987;
+
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fdebe9;
+  --color-danger-border: #f2b8b2;
+
+  --color-info: #1d4ed8;
+  --color-info-bg: #e8eefc;
+  --color-info-border: #b6c8f5;
+
+  --color-ring: #f59e0b;
 
   --radius-default: 8px;
   --radius-card: 12px;
 
-  --font-sans: 'Inter', 'system-ui', 'sans-serif';
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.04), 0 4px 12px rgb(28 25 23 / 0.05);
+  --shadow-pop: 0 4px 8px rgb(28 25 23 / 0.06), 0 16px 40px rgb(28 25 23 / 0.14);
+
+  --font-display: "Archivo Variable", "Inter Variable", sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 @layer base {
@@ -49,20 +102,67 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
-  /* Scrollbar custom styling */
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-accent-200);
+    color: var(--color-text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  input[type="date"],
+  input[type="datetime-local"] {
+    color-scheme: light;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-surface-0);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-surface-2);
+    background: #d6cfc2;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-surface-3);
+    background: #b8b0a3;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: var(--color-text-secondary);
 }

@@ -42,7 +42,7 @@ export const PromoteRoleModal = ({
     <form onSubmit={handleFormSubmit} className="space-y-5">
       {/* API Submission Error */}
       {submitError && (
-        <div className="p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold">
+        <div className="px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
           {submitError}
         </div>
       )}
@@ -72,10 +72,10 @@ export const PromoteRoleModal = ({
 
       {/* Deliberate Confirmation Notice */}
       {showConfirmationMessage && (
-        <div className="bg-[rgba(232,163,61,0.05)] border border-[rgba(232,163,61,0.2)] p-4 rounded-default text-xs text-warning">
+        <div className="bg-warning-bg border border-warning-border p-4 rounded-default text-xs text-warning">
           <p className="font-semibold mb-1">Deliberate Action Required:</p>
           <p className="leading-relaxed">
-            Are you sure you want to promote <span className="font-semibold text-text-primary">{employee.name}</span> to the role of <span className="font-bold text-accent-100">{getRoleLabel(selectedRole)}</span>? This will modify their access privileges immediately.
+            Are you sure you want to promote <span className="font-semibold text-text-primary">{employee.name}</span> to the role of <span className="font-bold text-accent-800">{getRoleLabel(selectedRole)}</span>? This will modify their access privileges immediately.
           </p>
         </div>
       )}

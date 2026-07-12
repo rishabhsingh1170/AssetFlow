@@ -1,21 +1,28 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import TopBar from "./TopBar";
 
 export const DashboardLayout = () => {
-  return (
-    <div className="flex h-screen w-screen overflow-hidden bg-surface-0 text-text-primary">
-      {/* Sidebar navigation */}
-      <Sidebar />
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
 
-      {/* Main scrolling workspace content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-8 lg:p-10">
-          <div className="max-w-7xl mx-auto w-full h-full">
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  return (
+    <div className="flex h-screen bg-surface-0 text-text-primary">
+      <Sidebar open={mobileOpen} onClose={() => setMobileOpen(false)} />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopBar onMenuClick={() => setMobileOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto w-full">
             <Outlet />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

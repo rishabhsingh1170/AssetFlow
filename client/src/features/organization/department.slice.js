@@ -11,10 +11,11 @@ export const fetchDepartments = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getDepartments();
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch departments"
+        err.message || "Failed to fetch departments"
       );
     }
   }
@@ -25,10 +26,11 @@ export const addDepartment = createAsyncThunk(
   async (departmentData, { rejectWithValue }) => {
     try {
       const response = await createDepartment(departmentData);
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to create department"
+        err.message || "Failed to create department"
       );
     }
   }
@@ -39,10 +41,11 @@ export const editDepartment = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateDepartment(id, data);
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to update department"
+        err.message || "Failed to update department"
       );
     }
   }
@@ -56,7 +59,7 @@ export const removeDepartment = createAsyncThunk(
       return id;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to delete department"
+        err.message || "Failed to delete department"
       );
     }
   }

@@ -8,5 +8,6 @@ export * from './dashboard.api';
 export * from './department.api';
 export * from './location.api';
 export * from './maintenance.api';
+export * from './notification.api';
 export * from './report.api';
 export * from './user.api';

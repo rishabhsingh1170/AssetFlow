@@ -11,10 +11,11 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getCategories();
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch categories"
+        err.message || "Failed to fetch categories"
       );
     }
   }
@@ -25,10 +26,11 @@ export const addCategory = createAsyncThunk(
   async (categoryData, { rejectWithValue }) => {
     try {
       const response = await createCategory(categoryData);
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to create category"
+        err.message || "Failed to create category"
       );
     }
   }
@@ -39,10 +41,11 @@ export const editCategory = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateCategory(id, data);
-      return response.data.data;
+      // The axios interceptor already unwraps to the body { success, data }.
+      return response.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to update category"
+        err.message || "Failed to update category"
       );
     }
   }
@@ -56,7 +59,7 @@ export const removeCategory = createAsyncThunk(
       return id;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to delete category"
+        err.message || "Failed to delete category"
       );
     }
   }

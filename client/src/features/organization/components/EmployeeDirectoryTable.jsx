@@ -95,7 +95,7 @@ export const EmployeeDirectoryTable = ({ employees = [], onPromote }) => {
                       {emp.email}
                     </TableCell>
                     <TableCell className="text-text-secondary">
-                      {emp.departmentName || emp.department_name || <span className="text-text-muted">—</span>}
+                      {emp.departmentName || emp.department_name || <span className="text-text-muted">-</span>}
                     </TableCell>
                     <TableCell>
                       <Badge variant={getRoleVariant(emp.role)}>
@@ -113,7 +113,7 @@ export const EmployeeDirectoryTable = ({ employees = [], onPromote }) => {
                         variant="secondary"
                         size="sm"
                         onClick={() => onPromote(emp)}
-                        className="px-3 py-1 font-bold uppercase tracking-wider text-[10px] rounded-full border border-border hover:border-accent-400/40 hover:bg-[rgba(232,163,61,0.05)] text-text-secondary hover:text-accent-400 gap-1.5 focus:ring-accent-400 transition-all duration-200"
+                        className="gap-1.5"
                       >
                         <UserCog size={12} />
                         <span>Role</span>

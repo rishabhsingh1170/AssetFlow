@@ -15,27 +15,25 @@ export const SignupForm = ({ onSubmit, submitLoading, error, success }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <div className="p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold text-center">
+        <div className="px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="p-3 bg-[rgba(46,204,113,0.08)] border border-[rgba(46,204,113,0.2)] text-accent-100 rounded-default text-xs font-semibold text-center">
+        <div className="px-3 py-2.5 bg-success-bg border border-success-border text-success rounded-default text-sm">
           {success}
         </div>
       )}
 
-      {/* Full Name field */}
       <Input
-        label="Full Name"
+        label="Full name"
         id="signup-fullname"
         placeholder="John Doe"
         error={errors.fullName?.message}
-        {...register("fullName", { required: "Full Name is required" })}
+        {...register("fullName", { required: "Full name is required" })}
       />
 
-      {/* Email field */}
       <Input
         label="Email"
         id="signup-email"
@@ -50,12 +48,11 @@ export const SignupForm = ({ onSubmit, submitLoading, error, success }) => {
         })}
       />
 
-      {/* Password field */}
       <Input
         label="Password"
         id="signup-password"
         type="password"
-        placeholder="••••••••••••"
+        placeholder="At least 8 characters"
         error={errors.password?.message}
         {...register("password", {
           required: "Password is required",
@@ -63,13 +60,8 @@ export const SignupForm = ({ onSubmit, submitLoading, error, success }) => {
         })}
       />
 
-      {/* Create Account Button */}
-      <Button
-        type="submit"
-        loading={submitLoading}
-        className="w-full font-bold uppercase tracking-wider text-xs py-2.5 mt-2"
-      >
-        Create Account
+      <Button type="submit" loading={submitLoading} className="w-full mt-2">
+        Create account
       </Button>
     </form>
   );

@@ -15,10 +15,7 @@ export const Input = React.forwardRef(
     return (
       <div className={`w-full ${className}`}>
         {label && (
-          <label
-            htmlFor={id}
-            className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2"
-          >
+          <label htmlFor={id} className="eyebrow block mb-1.5">
             {label}
           </label>
         )}
@@ -26,8 +23,10 @@ export const Input = React.forwardRef(
           ref={ref}
           type={type}
           id={id}
-          className={`w-full px-3 py-2 bg-surface-2 text-text-primary placeholder-text-muted border rounded-default border-border transition-all duration-200 focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400 disabled:opacity-50 disabled:cursor-not-allowed ${
-            error ? "border-danger focus:border-danger focus:ring-danger" : ""
+          className={`w-full px-3 py-2 text-sm bg-surface-1 text-text-primary placeholder:text-text-muted border rounded-default transition-colors duration-150 focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-ring/30 disabled:bg-surface-2 disabled:text-text-muted disabled:cursor-not-allowed ${
+            error
+              ? "border-danger focus:border-danger focus:ring-danger/30"
+              : "border-border-strong"
           }`}
           {...props}
         />

@@ -46,7 +46,7 @@ export const DepartmentForm = ({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Inline API submission error banner */}
       {submitError && (
-        <div className="p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold">
+        <div className="px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
           {submitError}
         </div>
       )}

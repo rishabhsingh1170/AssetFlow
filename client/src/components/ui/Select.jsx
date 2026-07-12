@@ -1,4 +1,5 @@
 import React from "react";
+import { ChevronDown } from "lucide-react";
 
 export const Select = React.forwardRef(
   (
@@ -16,10 +17,7 @@ export const Select = React.forwardRef(
     return (
       <div className={`w-full ${className}`}>
         {label && (
-          <label
-            htmlFor={id}
-            className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2"
-          >
+          <label htmlFor={id} className="eyebrow block mb-1.5">
             {label}
           </label>
         )}
@@ -27,30 +25,26 @@ export const Select = React.forwardRef(
           <select
             ref={ref}
             id={id}
-            className={`w-full px-3 py-2 bg-surface-2 text-text-primary border rounded-default border-border transition-all duration-200 focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400 disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer ${
-              error ? "border-danger focus:border-danger focus:ring-danger" : ""
+            className={`w-full px-3 py-2 pr-9 text-sm bg-surface-1 text-text-primary border rounded-default transition-colors duration-150 focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-ring/30 disabled:bg-surface-2 disabled:text-text-muted disabled:cursor-not-allowed appearance-none cursor-pointer ${
+              error
+                ? "border-danger focus:border-danger focus:ring-danger/30"
+                : "border-border-strong"
             }`}
             {...props}
           >
             {placeholder && (
-              <option value="" disabled className="bg-surface-3 text-text-muted">
+              <option value="" disabled>
                 {placeholder}
               </option>
             )}
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value} className="bg-surface-3 text-text-primary">
+              <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-secondary">
-            <svg
-              className="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-            </svg>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-text-muted">
+            <ChevronDown size={16} />
           </div>
         </div>
         {error && (

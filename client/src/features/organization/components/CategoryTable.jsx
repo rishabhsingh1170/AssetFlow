@@ -53,7 +53,7 @@ export const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
               {filteredCategories.map((cat) => (
                 <TableRow key={cat.id}>
                   <TableCell className="text-text-secondary font-mono text-xs">{cat.id}</TableCell>
-                  <TableCell className="font-mono text-xs text-accent-100">{cat.code || "N/A"}</TableCell>
+                  <TableCell className="font-mono text-[13px] text-accent-600">{cat.code || "N/A"}</TableCell>
                   <TableCell className="font-semibold text-text-primary">
                     {cat.name}
                   </TableCell>
@@ -64,7 +64,7 @@ export const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => onEdit(cat)}
-                        className="p-1.5 rounded-default text-text-secondary hover:text-accent-400 hover:bg-surface-2 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-default text-text-secondary hover:text-accent-600 hover:bg-surface-2 transition-colors cursor-pointer"
                         title="Edit Category"
                       >
                         <Edit2 size={14} />

@@ -10,7 +10,6 @@ export const Modal = ({
   size = "md",
   className = "",
 }) => {
-  // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -21,6 +20,15 @@ export const Modal = ({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   const sizes = {
     sm: "max-w-sm",
@@ -33,37 +41,37 @@ export const Modal = ({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+            className="fixed inset-0 bg-surface-ink/40 backdrop-blur-[2px]"
           />
 
-          {/* Modal dialog box */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 8 }}
+            initial={{ opacity: 0, scale: 0.97, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 8 }}
+            exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className={`relative w-full bg-surface-3 border border-border-strong rounded-card shadow-2xl overflow-hidden z-10 ${sizes[size]} ${className}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            className={`relative w-full bg-surface-1 border border-border rounded-card shadow-pop overflow-hidden z-10 ${sizes[size] || sizes.md} ${className}`}
           >
-            {/* Header section */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider">
+              <h3 className="font-display text-base font-semibold text-text-primary">
                 {title}
               </h3>
               <button
                 onClick={onClose}
+                aria-label="Close dialog"
                 className="p-1 rounded-default text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            {/* Content section */}
             <div className="px-6 py-5 max-h-[75vh] overflow-y-auto">
               {children}
             </div>

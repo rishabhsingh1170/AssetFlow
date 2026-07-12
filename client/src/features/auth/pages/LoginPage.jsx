@@ -4,11 +4,26 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
-import Card from "../../../components/ui/Card";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
+import Logo from "../../../components/brand/Logo";
 import { authService } from "../services/auth.service";
 import { clearError, loginFailure } from "../auth.slice";
+
+const MODE_COPY = {
+  login: {
+    title: "Sign in",
+    helper: "Use your work email to access the asset workspace.",
+  },
+  signup: {
+    title: "Create your account",
+    helper: "New accounts start with employee access.",
+  },
+  forgot: {
+    title: "Reset your password",
+    helper: "We will email you a link to set a new password.",
+  },
+};
 
 export const LoginPage = () => {
   const dispatch = useDispatch();
@@ -81,110 +96,112 @@ export const LoginPage = () => {
     setMode(newMode);
   };
 
+  const copy = MODE_COPY[mode];
+
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-surface-0 px-4">
-      <Card className="w-full max-w-sm border border-border bg-surface-1 p-8 shadow-2xl rounded-card text-center">
-        <div className="flex flex-col items-center mb-6">
-          <h2 className="text-xs font-semibold text-text-secondary uppercase tracking-widest mb-4 select-none">
-            AssetFlow – {mode === "login" ? "login" : mode === "signup" ? "sign up" : "forgot password"}
-          </h2>
-          <div className="w-12 h-12 rounded-full border border-border-strong flex items-center justify-center bg-surface-2 text-accent-400 font-bold text-sm tracking-wider shadow-sm select-none">
-            AF
-          </div>
+    <div>
+      <div className="lg:hidden mb-8">
+        <Logo size={30} withWordmark />
+      </div>
+
+      <p className="font-mono text-[11px] uppercase tracking-[0.08em] font-medium text-accent-600 mb-2">
+        AssetFlow
+      </p>
+      <h1 className="font-display text-2xl font-bold text-text-primary">
+        {copy.title}
+      </h1>
+      <p className="text-sm text-text-secondary mt-1 mb-7">{copy.helper}</p>
+
+      {error && mode === "forgot" && (
+        <div className="mb-4 px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
+          {error}
         </div>
+      )}
 
-        {error && mode === "forgot" && (
-          <div className="mb-4 p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold text-center">
-            {error}
-          </div>
-        )}
+      {forgotSuccess && (
+        <div className="mb-4 px-3 py-2.5 bg-success-bg border border-success-border text-success rounded-default text-sm">
+          {forgotSuccess}
+        </div>
+      )}
 
-        {forgotSuccess && (
-          <div className="mb-4 p-3 bg-[rgba(46,204,113,0.08)] border border-[rgba(46,204,113,0.2)] text-accent-100 rounded-default text-xs font-semibold text-center">
-            {forgotSuccess}
-          </div>
-        )}
+      {mode === "login" && (
+        <LoginForm
+          onSubmit={handleLoginSubmit}
+          submitLoading={loading}
+          error={error}
+          onForgotPassword={() => switchMode("forgot")}
+        />
+      )}
 
-        {mode === "login" && (
-          <LoginForm
-            onSubmit={handleLoginSubmit}
-            submitLoading={loading}
-            error={error}
-            onForgotPassword={() => switchMode("forgot")}
+      {mode === "signup" && (
+        <SignupForm
+          onSubmit={handleSignupSubmit}
+          submitLoading={loading}
+          error={error}
+          success={signupSuccess}
+        />
+      )}
+
+      {mode === "forgot" && (
+        <form onSubmit={handleSubmitForgot(handleForgotSubmit)} className="space-y-4">
+          <Input
+            label="Email"
+            id="forgot-email"
+            placeholder="name@company.com"
+            error={errorsForgot.email?.message}
+            {...registerForgot("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
           />
+          <Button type="submit" loading={forgotLoading} className="w-full mt-2">
+            Send reset link
+          </Button>
+        </form>
+      )}
+
+      <hr className="border-border my-7" />
+
+      <div className="text-sm text-text-secondary">
+        {mode === "login" && (
+          <>
+            Need an account?{" "}
+            <button
+              type="button"
+              onClick={() => switchMode("signup")}
+              className="text-accent-600 hover:text-accent-800 cursor-pointer font-medium transition-colors"
+            >
+              Create account
+            </button>
+          </>
         )}
 
         {mode === "signup" && (
-          <SignupForm
-            onSubmit={handleSignupSubmit}
-            submitLoading={loading}
-            error={error}
-            success={signupSuccess}
-          />
+          <>
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={() => switchMode("login")}
+              className="text-accent-600 hover:text-accent-800 cursor-pointer font-medium transition-colors"
+            >
+              Sign in
+            </button>
+          </>
         )}
 
         {mode === "forgot" && (
-          <form onSubmit={handleSubmitForgot(handleForgotSubmit)} className="space-y-4">
-            <Input
-              label="Email"
-              id="forgot-email"
-              placeholder="name@company.com"
-              error={errorsForgot.email?.message}
-              {...registerForgot("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-            />
-            <Button
-              type="submit"
-              loading={forgotLoading}
-              className="w-full font-bold uppercase tracking-wider text-xs py-2.5 mt-2"
-            >
-              Send Reset Link
-            </Button>
-          </form>
+          <button
+            type="button"
+            onClick={() => switchMode("login")}
+            className="text-accent-600 hover:text-accent-800 cursor-pointer font-medium transition-colors"
+          >
+            Back to sign in
+          </button>
         )}
-
-        <hr className="border-border my-6" />
-
-        <div className="text-xs text-text-secondary select-none">
-          {mode === "login" && (
-            <>
-              Need an account?{" "}
-              <span
-                onClick={() => switchMode("signup")}
-                className="text-accent-400 hover:text-accent-200 cursor-pointer font-semibold transition-colors"
-              >
-                Create Account
-              </span>
-            </>
-          )}
-
-          {mode === "signup" && (
-            <>
-              Already have an account?{" "}
-              <span
-                onClick={() => switchMode("login")}
-                className="text-accent-400 hover:text-accent-200 cursor-pointer font-semibold transition-colors"
-              >
-                Sign In
-              </span>
-            </>
-          )}
-
-          {mode === "forgot" && (
-            <span
-              onClick={() => switchMode("login")}
-              className="text-accent-400 hover:text-accent-200 cursor-pointer font-semibold transition-colors"
-            >
-              Back to Sign In
-            </span>
-          )}
-        </div>
-      </Card>
+      </div>
     </div>
   );
 };

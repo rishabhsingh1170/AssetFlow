@@ -16,9 +16,9 @@ export const Tabs = ({
             <button
               key={tab.value}
               onClick={() => onChange(tab.value)}
-              className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-all duration-200 cursor-pointer -mb-[2px] ${
+              className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors duration-150 cursor-pointer -mb-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 rounded-t-default ${
                 isActive
-                  ? "border-accent-400 text-accent-400 font-semibold"
+                  ? "border-accent-500 text-accent-600 font-semibold"
                   : "border-transparent text-text-secondary hover:text-text-primary"
               }`}
             >
@@ -30,7 +30,6 @@ export const Tabs = ({
     );
   }
 
-  // Pill variant matching Screen 3 wireframes
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {tabs.map((tab) => {
@@ -39,9 +38,9 @@ export const Tabs = ({
           <button
             key={tab.value}
             onClick={() => onChange(tab.value)}
-            className={`px-5 py-2 text-xs font-semibold uppercase tracking-wider rounded-full border transition-all duration-200 cursor-pointer ${
+            className={`px-4 py-1.5 text-sm font-medium rounded-full border transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 ${
               isActive
-                ? "bg-[rgba(232,163,61,0.15)] text-accent-400 border-accent-400 shadow-sm"
+                ? "bg-accent-100 text-accent-800 border-accent-300"
                 : "bg-surface-1 border-border text-text-secondary hover:text-text-primary hover:border-border-strong"
             }`}
           >

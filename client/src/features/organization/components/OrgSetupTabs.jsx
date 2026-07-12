@@ -18,12 +18,7 @@ export const OrgSetupTabs = ({ activeTab, onTabChange, onAddClick }) => {
 
       {/* Inline "+ Add" Action Button */}
       {showAddButton && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onAddClick}
-          className="px-5 py-2 font-bold uppercase tracking-wider text-[11px] rounded-full border border-accent-400/40 text-accent-400 bg-[rgba(232,163,61,0.05)] hover:bg-[rgba(232,163,61,0.15)] focus:ring-accent-400"
-        >
+        <Button variant="secondary" size="sm" onClick={onAddClick}>
           + Add
         </Button>
       )}

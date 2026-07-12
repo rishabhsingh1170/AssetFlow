@@ -9,13 +9,13 @@ export const Table = ({ children, className = "" }) => (
 );
 
 export const TableHeader = ({ children, className = "" }) => (
-  <thead className={`border-b border-border bg-surface-1/50 ${className}`}>
+  <thead className={`bg-surface-2 border-b border-border ${className}`}>
     {children}
   </thead>
 );
 
 export const TableBody = ({ children, className = "" }) => (
-  <tbody className={`divide-y divide-border bg-surface-1/10 ${className}`}>
+  <tbody className={`divide-y divide-border bg-surface-1 ${className}`}>
     {children}
   </tbody>
 );
@@ -24,7 +24,7 @@ export const TableRow = ({ children, className = "", onClick, hover = true }) =>
   <tr
     onClick={onClick}
     className={`transition-colors duration-150 ${
-      hover ? "hover:bg-surface-2/40" : ""
+      hover ? "hover:bg-accent-50/60" : ""
     } ${onClick ? "cursor-pointer" : ""} ${className}`}
   >
     {children}
@@ -33,14 +33,14 @@ export const TableRow = ({ children, className = "", onClick, hover = true }) =>
 
 export const TableHead = ({ children, className = "" }) => (
   <th
-    className={`px-6 py-4.5 text-[11px] font-bold uppercase tracking-wider text-text-secondary ${className}`}
+    className={`px-4 py-3 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-text-secondary ${className}`}
   >
     {children}
   </th>
 );
 
 export const TableCell = ({ children, className = "" }) => (
-  <td className={`px-6 py-4 text-sm text-text-primary align-middle ${className}`}>
+  <td className={`px-4 py-3.5 text-sm text-text-primary align-middle ${className}`}>
     {children}
   </td>
 );

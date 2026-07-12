@@ -60,14 +60,14 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
                   <TableCell className="font-semibold text-text-primary">
                     {dept.name}
                   </TableCell>
-                  <TableCell className="font-mono text-xs text-accent-100">
-                    {dept.code || "—"}
+                  <TableCell className="font-mono text-[13px] text-accent-600">
+                    {dept.code || "-"}
                   </TableCell>
                   <TableCell className="text-text-secondary">
-                    {dept.headName || dept.head_user_name || <span className="text-text-muted">—</span>}
+                    {dept.headName || dept.head_user_name || <span className="text-text-muted">-</span>}
                   </TableCell>
                   <TableCell className="text-text-secondary">
-                    {dept.parentDepartmentName || dept.parent_department_name || <span className="text-text-muted">—</span>}
+                    {dept.parentDepartmentName || dept.parent_department_name || <span className="text-text-muted">-</span>}
                   </TableCell>
                   <TableCell>
                     <Badge variant={(dept.status || "").toLowerCase() === "active" ? "active" : "inactive"}>
@@ -78,7 +78,7 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => onEdit(dept)}
-                        className="p-1.5 rounded-default text-text-secondary hover:text-accent-400 hover:bg-surface-2 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-default text-text-secondary hover:text-accent-600 hover:bg-surface-2 transition-colors cursor-pointer"
                         title="Edit Department"
                       >
                         <Edit2 size={14} />
@@ -100,7 +100,7 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
       </div>
 
       {/* Warning Notice Caption from Wireframe */}
-      <div className="flex items-start gap-2.5 bg-[rgba(232,163,61,0.06)] border border-[rgba(232,163,61,0.2)] text-warning p-4 rounded-default">
+      <div className="flex items-start gap-2.5 bg-warning-bg border border-warning-border text-warning p-4 rounded-default">
         <AlertCircle size={16} className="mt-0.5 shrink-0" />
         <span className="text-xs font-medium leading-relaxed">
           Editing a department here also drives the picklist in Screen 4 & 5

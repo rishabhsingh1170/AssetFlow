@@ -15,12 +15,11 @@ export const LoginForm = ({ onSubmit, submitLoading, error, onForgotPassword }) 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
-        <div className="p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold text-center">
+        <div className="px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
           {error}
         </div>
       )}
 
-      {/* Email input field */}
       <Input
         label="Email"
         id="login-email"
@@ -35,33 +34,28 @@ export const LoginForm = ({ onSubmit, submitLoading, error, onForgotPassword }) 
         })}
       />
 
-      {/* Password input field */}
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <Input
           label="Password"
           id="login-password"
           type="password"
-          placeholder="••••••••••••"
+          placeholder="Enter your password"
           error={errors.password?.message}
           {...register("password", { required: "Password is required" })}
         />
         <div className="text-right">
-          <span
+          <button
+            type="button"
             onClick={onForgotPassword}
-            className="text-xs text-text-muted hover:text-text-primary cursor-pointer transition-colors select-none"
+            className="text-xs text-accent-600 hover:text-accent-800 cursor-pointer font-medium transition-colors"
           >
             Forgot password
-          </span>
+          </button>
         </div>
       </div>
 
-      {/* Sign In Button */}
-      <Button
-        type="submit"
-        loading={submitLoading}
-        className="w-full font-bold uppercase tracking-wider text-xs py-2.5 mt-2"
-      >
-        Sign In
+      <Button type="submit" loading={submitLoading} className="w-full mt-2">
+        Sign in
       </Button>
     </form>
   );
