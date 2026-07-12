@@ -8,16 +8,24 @@ export const EmployeeDirectoryTable = ({ employees = [], onPromote }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filtering based on search queries
-  const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (emp.departmentName && emp.departmentName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    emp.role.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredEmployees = employees.filter((emp) => {
+    const name = emp.name || emp.fullName || emp.full_name || "";
+    const email = emp.email || "";
+    const departmentName = emp.departmentName || emp.parentDepartmentName || "";
+    const role = emp.role || "";
+
+    return (
+      name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      departmentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      role.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
 
   // Map roles to corresponding Badge variants
   const getRoleVariant = (role) => {
-    switch (role) {
+    const r = (role || "").toLowerCase();
+    switch (r) {
       case "admin":
         return "admin";
       case "asset_manager":
@@ -31,7 +39,7 @@ export const EmployeeDirectoryTable = ({ employees = [], onPromote }) => {
 
   // Human readable role labels
   const getRoleLabel = (role) => {
-    return role.split("_").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    return (role || "").split("_").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
   };
 
   return (
@@ -74,41 +82,46 @@ export const EmployeeDirectoryTable = ({ employees = [], onPromote }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredEmployees.map((emp) => (
-                <TableRow key={emp.id}>
-                  <TableCell className="font-semibold text-text-primary">
-                    {emp.name}
-                  </TableCell>
-                  <TableCell className="text-text-secondary font-mono text-xs">
-                    {emp.email}
-                  </TableCell>
-                  <TableCell className="text-text-secondary">
-                    {emp.departmentName || <span className="text-text-muted">—</span>}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleVariant(emp.role)}>
-                      {getRoleLabel(emp.role)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={emp.status === "Active" ? "active" : "inactive"}>
-                      {emp.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {/* Role Promotion Trigger Button */}
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => onPromote(emp)}
-                      className="px-3 py-1 font-bold uppercase tracking-wider text-[10px] rounded-full border border-border hover:border-accent-400/40 hover:bg-[rgba(232,163,61,0.05)] text-text-secondary hover:text-accent-400 gap-1.5 focus:ring-accent-400 transition-all duration-200"
-                    >
-                      <UserCog size={12} />
-                      <span>Role</span>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {filteredEmployees.map((emp) => {
+                const name = emp.name || emp.fullName || emp.full_name;
+                const statusStr = (emp.status || "active").toLowerCase();
+
+                return (
+                  <TableRow key={emp.id}>
+                    <TableCell className="font-semibold text-text-primary">
+                      {name}
+                    </TableCell>
+                    <TableCell className="text-text-secondary font-mono text-xs">
+                      {emp.email}
+                    </TableCell>
+                    <TableCell className="text-text-secondary">
+                      {emp.departmentName || emp.department_name || <span className="text-text-muted">—</span>}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getRoleVariant(emp.role)}>
+                        {getRoleLabel(emp.role)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={statusStr === "active" ? "active" : "inactive"}>
+                        {statusStr === "active" ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {/* Role Promotion Trigger Button */}
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => onPromote(emp)}
+                        className="px-3 py-1 font-bold uppercase tracking-wider text-[10px] rounded-full border border-border hover:border-accent-400/40 hover:bg-[rgba(232,163,61,0.05)] text-text-secondary hover:text-accent-400 gap-1.5 focus:ring-accent-400 transition-all duration-200"
+                      >
+                        <UserCog size={12} />
+                        <span>Role</span>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         )}

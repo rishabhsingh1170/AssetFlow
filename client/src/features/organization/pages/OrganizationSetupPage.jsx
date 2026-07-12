@@ -122,9 +122,10 @@ export const OrganizationSetupPage = () => {
   const handleDeptFormSubmit = async (formData) => {
     const payload = {
       name: formData.name,
-      headId: formData.headId ? parseInt(formData.headId) : null,
-      parentDepartmentId: formData.parentDepartmentId ? parseInt(formData.parentDepartmentId) : null,
-      status: formData.status,
+      code: formData.code,
+      headUserId: formData.headUserId || null,
+      parentDepartmentId: formData.parentDepartmentId || null,
+      status: formData.status ? formData.status.toLowerCase() : "active",
     };
 
     try {

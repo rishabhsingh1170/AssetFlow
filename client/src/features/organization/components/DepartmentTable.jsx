@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../../../components/ui/Table";
 import Badge from "../../../components/ui/Badge";
-import Input from "../../../components/ui/Input";
 import { Edit2, Trash2, Search, AlertCircle } from "lucide-react";
 
 export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
@@ -9,7 +8,8 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
 
   // Filtering based on search query
   const filteredDepartments = departments.filter((dept) =>
-    dept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (dept.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+    (dept.code?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
     (dept.headName && dept.headName.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (dept.parentDepartmentName &&
       dept.parentDepartmentName.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -47,6 +47,7 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
             <TableHeader>
               <TableRow hover={false}>
                 <TableHead>Department</TableHead>
+                <TableHead>Code</TableHead>
                 <TableHead>Head</TableHead>
                 <TableHead>Parent Dept</TableHead>
                 <TableHead>Status</TableHead>
@@ -59,15 +60,18 @@ export const DepartmentTable = ({ departments = [], onEdit, onDelete }) => {
                   <TableCell className="font-semibold text-text-primary">
                     {dept.name}
                   </TableCell>
-                  <TableCell className="text-text-secondary">
-                    {dept.headName || <span className="text-text-muted">—</span>}
+                  <TableCell className="font-mono text-xs text-accent-100">
+                    {dept.code || "—"}
                   </TableCell>
                   <TableCell className="text-text-secondary">
-                    {dept.parentDepartmentName || <span className="text-text-muted">—</span>}
+                    {dept.headName || dept.head_user_name || <span className="text-text-muted">—</span>}
+                  </TableCell>
+                  <TableCell className="text-text-secondary">
+                    {dept.parentDepartmentName || dept.parent_department_name || <span className="text-text-muted">—</span>}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={dept.status === "Active" ? "active" : "inactive"}>
-                      {dept.status}
+                    <Badge variant={(dept.status || "").toLowerCase() === "active" ? "active" : "inactive"}>
+                      {(dept.status || "active").toLowerCase() === "active" ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">

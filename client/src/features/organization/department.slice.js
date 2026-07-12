@@ -11,7 +11,7 @@ export const fetchDepartments = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getDepartments();
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to fetch departments"
@@ -25,7 +25,7 @@ export const addDepartment = createAsyncThunk(
   async (departmentData, { rejectWithValue }) => {
     try {
       const response = await createDepartment(departmentData);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to create department"
@@ -39,7 +39,7 @@ export const editDepartment = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateDepartment(id, data);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to update department"

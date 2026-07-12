@@ -7,7 +7,8 @@ export const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
 
   // Filtering based on search query
   const filteredCategories = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (cat.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+    (cat.code?.toLowerCase() || "").includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -42,16 +43,22 @@ export const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
             <TableHeader>
               <TableRow hover={false}>
                 <TableHead className="w-20">ID</TableHead>
-                <TableHead>Category Name</TableHead>
+                <TableHead className="w-32">Code</TableHead>
+                <TableHead className="w-48">Category Name</TableHead>
+                <TableHead>Description</TableHead>
                 <TableHead className="text-right w-28">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredCategories.map((cat) => (
                 <TableRow key={cat.id}>
-                  <TableCell className="text-text-secondary font-mono">{cat.id}</TableCell>
+                  <TableCell className="text-text-secondary font-mono text-xs">{cat.id}</TableCell>
+                  <TableCell className="font-mono text-xs text-accent-100">{cat.code || "N/A"}</TableCell>
                   <TableCell className="font-semibold text-text-primary">
                     {cat.name}
+                  </TableCell>
+                  <TableCell className="text-text-secondary text-xs truncate max-w-xs">
+                    {cat.description || <span className="text-text-muted italic">No description</span>}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">

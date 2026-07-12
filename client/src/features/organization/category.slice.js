@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getCategories();
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to fetch categories"
@@ -25,7 +25,7 @@ export const addCategory = createAsyncThunk(
   async (categoryData, { rejectWithValue }) => {
     try {
       const response = await createCategory(categoryData);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to create category"
@@ -39,7 +39,7 @@ export const editCategory = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateCategory(id, data);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to update category"

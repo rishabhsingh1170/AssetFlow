@@ -6,7 +6,7 @@ export const fetchEmployees = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getUsers();
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to fetch employees"
@@ -20,7 +20,7 @@ export const promoteEmployee = createAsyncThunk(
   async ({ id, role }, { rejectWithValue }) => {
     try {
       const response = await updateUser(id, { role });
-      return response.data;
+      return response.data.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Failed to update employee role"

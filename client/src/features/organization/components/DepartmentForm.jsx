@@ -5,7 +5,7 @@ import Select from "../../../components/ui/Select";
 import Button from "../../../components/ui/Button";
 
 export const DepartmentForm = ({
-  defaultValues = { name: "", headId: "", parentDepartmentId: "", status: "Active" },
+  defaultValues = { name: "", code: "", headUserId: "", parentDepartmentId: "", status: "Active" },
   onSubmit,
   employees = [],
   departments = [],
@@ -20,8 +20,9 @@ export const DepartmentForm = ({
   } = useForm({
     defaultValues: {
       name: defaultValues.name || "",
-      headId: defaultValues.headId ? String(defaultValues.headId) : "",
-      parentDepartmentId: defaultValues.parentDepartmentId ? String(defaultValues.parentDepartmentId) : "",
+      code: defaultValues.code || "",
+      headUserId: defaultValues.headUserId || defaultValues.head_user_id || "",
+      parentDepartmentId: defaultValues.parentDepartmentId || defaultValues.parent_department_id || "",
       status: defaultValues.status || "Active",
     },
   });
@@ -32,7 +33,7 @@ export const DepartmentForm = ({
     .map((dept) => ({ label: dept.name, value: String(dept.id) }));
 
   const employeeOptions = employees.map((emp) => ({
-    label: `${emp.name} (${emp.email})`,
+    label: `${emp.name || emp.full_name} (${emp.email})`,
     value: String(emp.id),
   }));
 
@@ -59,14 +60,27 @@ export const DepartmentForm = ({
         {...register("name", { required: "Department Name is required" })}
       />
 
+      {/* Code Input (Required by Backend) */}
+      <Input
+        label="Department Code"
+        id="dept-code"
+        placeholder="e.g. ENG-01"
+        error={errors.code?.message}
+        {...register("code", {
+          required: "Department Code is required",
+          minLength: { value: 2, message: "Code must be at least 2 characters" },
+          maxLength: { value: 40, message: "Code must not exceed 40 characters" },
+        })}
+      />
+
       {/* Department Head Selector */}
       <Select
         label="Department Head"
         id="dept-head"
         placeholder="Select Department Head (Optional)"
         options={employeeOptions}
-        error={errors.headId?.message}
-        {...register("headId")}
+        error={errors.headUserId?.message}
+        {...register("headUserId")}
       />
 
       {/* Parent Department Selector */}
