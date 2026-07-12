@@ -14,3 +14,13 @@ export const updateDepartment = (id, data) =>
 
 export const deleteDepartment = (id) =>
     api.delete(`/departments/${id}`);
+
+export const departmentApi = {
+    createDepartment,
+    deleteDepartment,
+    getDepartmentById,
+    getDepartments,
+    updateDepartment,
+};
+
+export default departmentApi;

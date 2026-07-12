@@ -13,3 +13,13 @@ export const updateUser = (id, data) =>
 
 export const deleteUser = (id) =>
     api.delete(`/users/${id}`);
+
+export const userApi = {
+    createUser,
+    deleteUser,
+    getUserById,
+    getUsers,
+    updateUser,
+};
+
+export default userApi;

@@ -15,6 +15,16 @@ const startServer = async () => {
         });
     } catch (error) {
         console.error("Failed to connect to database");
+
+        if (error.code === "ENOTFOUND") {
+            console.error(
+                "Database host could not be resolved by Node.js. If you are using Supabase, use the Session Pooler or Transaction Pooler connection string from Project Settings > Database instead of the direct db.<project-ref>.supabase.co URL."
+            );
+            console.error(
+                "Also URL-encode special characters in the database password, for example @ becomes %40."
+            );
+        }
+
         console.error(error);
         process.exit(1);
     }

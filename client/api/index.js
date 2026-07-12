@@ -1,3 +1,12 @@
 export { default as api } from './axios';
 export * from './asset.api';
+export * from './audit.api';
+export * from './auth.api';
+export * from './booking.api';
+export * from './category.api';
+export * from './dashboard.api';
+export * from './department.api';
 export * from './location.api';
+export * from './maintenance.api';
+export * from './report.api';
+export * from './user.api';
