@@ -1,10 +1,10 @@
 const pool = require("../config/db");
 
-// Get all departments
-const getAllDepartments = async () => {
+// Get all categories
+const getAllCategories = async () => {
     const query = `
         SELECT *
-        FROM departments
+        FROM asset_categories
         ORDER BY created_at DESC;
     `;
 
@@ -12,11 +12,11 @@ const getAllDepartments = async () => {
     return result.rows;
 };
 
-// Get department by ID
-const getDepartmentById = async (id) => {
+// Get category by ID
+const getCategoryById = async (id) => {
     const query = `
         SELECT *
-        FROM departments
+        FROM asset_categories
         WHERE id = $1;
     `;
 
@@ -24,56 +24,57 @@ const getDepartmentById = async (id) => {
     return result.rows[0];
 };
 
-// Create department
-const createDepartment = async (department) => {
+// Create category
+const createCategory = async (category) => {
     const {
         name,
         code,
-        parent_department_id = null,
-        head_user_id = null,
+        description = null,
+        custom_fields = {},
         status = "active",
-    } = department;
+    } = category;
 
     const query = `
-        INSERT INTO departments (
+        INSERT INTO asset_categories
+        (
             name,
             code,
-            parent_department_id,
-            head_user_id,
+            description,
+            custom_fields,
             status
         )
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1,$2,$3,$4,$5)
         RETURNING *;
     `;
 
     const result = await pool.query(query, [
         name,
         code,
-        parent_department_id,
-        head_user_id,
+        description,
+        custom_fields,
         status,
     ]);
 
     return result.rows[0];
 };
 
-// Update department
-const updateDepartment = async (id, department) => {
+// Update category
+const updateCategory = async (id, category) => {
     const {
         name,
         code,
-        parent_department_id = null,
-        head_user_id = null,
+        description = null,
+        custom_fields = {},
         status,
-    } = department;
+    } = category;
 
     const query = `
-        UPDATE departments
+        UPDATE asset_categories
         SET
             name = $1,
             code = $2,
-            parent_department_id = $3,
-            head_user_id = $4,
+            description = $3,
+            custom_fields = $4,
             status = $5
         WHERE id = $6
         RETURNING *;
@@ -82,8 +83,8 @@ const updateDepartment = async (id, department) => {
     const result = await pool.query(query, [
         name,
         code,
-        parent_department_id,
-        head_user_id,
+        description,
+        custom_fields,
         status,
         id,
     ]);
@@ -91,10 +92,10 @@ const updateDepartment = async (id, department) => {
     return result.rows[0];
 };
 
-// Delete department
-const deleteDepartment = async (id) => {
+// Delete category
+const deleteCategory = async (id) => {
     const query = `
-        DELETE FROM departments
+        DELETE FROM asset_categories
         WHERE id = $1
         RETURNING *;
     `;
@@ -104,9 +105,9 @@ const deleteDepartment = async (id) => {
 };
 
 module.exports = {
-    getAllDepartments,
-    getDepartmentById,
-    createDepartment,
-    updateDepartment,
-    deleteDepartment,
+    getAllCategories,
+    getCategoryById,
+    createCategory,
+    updateCategory,
+    deleteCategory,
 };
