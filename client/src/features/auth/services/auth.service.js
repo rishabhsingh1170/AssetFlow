@@ -9,6 +9,28 @@ import {
   logoutSuccess,
 } from "../auth.slice";
 
+const getAuthErrorMessage = (err, fallback, context = "signup") => {
+  const message = err?.message || "";
+  const status = err?.status || err?.code;
+  const normalizedMessage = message.toLowerCase();
+
+  if (status === 429 || normalizedMessage.includes("rate limit")) {
+    return context === "signup"
+      ? "Too many signup emails were requested. Please wait a few minutes before trying again."
+      : "Too many attempts. Please wait a few minutes before trying again.";
+  }
+
+  if (normalizedMessage.includes("already registered") || normalizedMessage.includes("already exists")) {
+    return "An account with this email already exists. Please sign in instead.";
+  }
+
+  if (normalizedMessage.includes("invalid login credentials")) {
+    return "Incorrect email or password. Please try again.";
+  }
+
+  return message || fallback;
+};
+
 export const authService = {
   login: async (credentials, dispatch) => {
     dispatch(loginStart());
@@ -33,7 +55,7 @@ export const authService = {
       dispatch(loginSuccess({ user: data.user, profile: userProfile }));
       return { user: data.user, profile: userProfile };
     } catch (err) {
-      const errMsg = err.message || "Login failed";
+      const errMsg = getAuthErrorMessage(err, "Login failed", "login");
       dispatch(loginFailure(errMsg));
       throw new Error(errMsg);
     }
@@ -54,13 +76,19 @@ export const authService = {
 
       if (error) throw error;
 
+      // With email confirmation enabled, signUp for an already-registered email
+      // returns a stub user with no identities instead of an error.
+      if (data.user && !data.session && data.user.identities?.length === 0) {
+        throw new Error("An account with this email already exists. Please sign in instead.");
+      }
+
       const user = data.user;
       const profile = data.session ? { role: "employee", full_name: userData.fullName } : null;
 
       dispatch(loginSuccess({ user: data.session ? user : null, profile }));
       return { user, session: data.session };
     } catch (err) {
-      const errMsg = err.message || "Signup failed";
+      const errMsg = getAuthErrorMessage(err, "Signup failed", "signup");
       dispatch(loginFailure(errMsg));
       throw new Error(errMsg);
     }

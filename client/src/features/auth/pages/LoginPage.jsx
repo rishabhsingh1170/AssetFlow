@@ -15,6 +15,7 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const [mode, setMode] = useState("login"); // "login" | "signup" | "forgot"
   const [forgotSuccess, setForgotSuccess] = useState("");
+  const [signupSuccess, setSignupSuccess] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
 
   const { user, loading, error } = useSelector((state) => state.auth);
@@ -43,11 +44,16 @@ export const LoginPage = () => {
   };
 
   const handleSignupSubmit = async (data) => {
+    setSignupSuccess("");
     try {
-      await authService.signup(
+      const result = await authService.signup(
         { email: data.email, password: data.password, fullName: data.fullName },
         dispatch
       );
+
+      if (!result.session) {
+        setSignupSuccess("Account created. Please check your email to confirm your account before signing in.");
+      }
     } catch (err) {
       console.error("Signup failed:", err);
     }
@@ -71,6 +77,7 @@ export const LoginPage = () => {
   const switchMode = (newMode) => {
     dispatch(clearError());
     setForgotSuccess("");
+    setSignupSuccess("");
     setMode(newMode);
   };
 
@@ -112,6 +119,7 @@ export const LoginPage = () => {
             onSubmit={handleSignupSubmit}
             submitLoading={loading}
             error={error}
+            success={signupSuccess}
           />
         )}
 

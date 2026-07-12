@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 
-export const SignupForm = ({ onSubmit, submitLoading, error }) => {
+export const SignupForm = ({ onSubmit, submitLoading, error, success }) => {
   const {
     register,
     handleSubmit,
@@ -17,6 +17,12 @@ export const SignupForm = ({ onSubmit, submitLoading, error }) => {
       {error && (
         <div className="p-3 bg-[rgba(224,100,90,0.08)] border border-[rgba(224,100,90,0.2)] text-danger rounded-default text-xs font-semibold text-center">
           {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="p-3 bg-[rgba(46,204,113,0.08)] border border-[rgba(46,204,113,0.2)] text-accent-100 rounded-default text-xs font-semibold text-center">
+          {success}
         </div>
       )}
 
