@@ -10,11 +10,16 @@ export const PromoteRoleModal = ({
   submitError = null,
 }) => {
   const [selectedRole, setSelectedRole] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
+  const [localError, setLocalError] = useState(null);
 
   // Initialize selected role with current role when employee changes
   useEffect(() => {
     if (employee) {
       setSelectedRole(employee.role);
+      setSuccess(false);
+      setLocalError(null);
     }
   }, [employee]);
 
@@ -31,19 +36,56 @@ export const PromoteRoleModal = ({
     return roleOptions.find((opt) => opt.value === role)?.label || role;
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(selectedRole);
+    setLocalLoading(true);
+    setLocalError(null);
+    try {
+      await onSubmit(selectedRole);
+      setSuccess(true);
+    } catch (err) {
+      setLocalError(err.message || "Failed to promote employee");
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   const showConfirmationMessage = selectedRole !== employee.role;
+  const activeError = localError || submitError;
+  const activeLoading = localLoading || submitLoading;
+
+  if (success) {
+    return (
+      <div className="space-y-6 text-center py-4 select-none">
+        <div className="w-12 h-12 rounded-full bg-success-bg border border-success-border text-success flex items-center justify-center mx-auto text-lg font-bold">
+          ✓
+        </div>
+        <div className="space-y-2">
+          <h4 className="text-sm font-bold text-text-primary uppercase tracking-wider">
+            Promotion Complete
+          </h4>
+          <p className="text-xs text-text-secondary leading-relaxed max-w-sm mx-auto">
+            <span className="font-semibold text-text-primary">{employee.name}</span> has been promoted to the role of <span className="font-bold text-accent-800">{getRoleLabel(selectedRole)}</span>. They'll see their updated access next time they log in.
+          </p>
+        </div>
+        <div className="pt-4 border-t border-border mt-6 flex justify-center">
+          <Button
+            onClick={onClose}
+            className="px-6 font-bold uppercase tracking-wider text-xs"
+          >
+            Close
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleFormSubmit} className="space-y-5">
       {/* API Submission Error */}
-      {submitError && (
+      {activeError && (
         <div className="px-3 py-2.5 bg-danger-bg border border-danger-border text-danger rounded-default text-sm">
-          {submitError}
+          {activeError}
         </div>
       )}
 
@@ -75,7 +117,7 @@ export const PromoteRoleModal = ({
         <div className="bg-warning-bg border border-warning-border p-4 rounded-default text-xs text-warning">
           <p className="font-semibold mb-1">Deliberate Action Required:</p>
           <p className="leading-relaxed">
-            Are you sure you want to promote <span className="font-semibold text-text-primary">{employee.name}</span> to the role of <span className="font-bold text-accent-800">{getRoleLabel(selectedRole)}</span>? This will modify their access privileges immediately.
+            Are you sure you want to promote <span className="font-semibold text-text-primary">{employee.name}</span> to the role of <span className="font-bold text-accent-800">{getRoleLabel(selectedRole)}</span>? They will see their updated access next time they log in.
           </p>
         </div>
       )}
@@ -85,14 +127,14 @@ export const PromoteRoleModal = ({
         <Button
           variant="ghost"
           onClick={onClose}
-          disabled={submitLoading}
+          disabled={activeLoading}
           className="font-bold uppercase tracking-wider text-xs"
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          loading={submitLoading}
+          loading={activeLoading}
           disabled={!showConfirmationMessage}
           className="px-6 font-bold uppercase tracking-wider text-xs"
         >

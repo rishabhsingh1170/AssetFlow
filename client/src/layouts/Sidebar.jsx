@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import { NAV_ITEMS } from "../constants/navConfig";
-import { useRole } from "../hooks/useRole";
+import { useRole, hasRole } from "../hooks/useRole";
 import Logo from "../components/brand/Logo";
 
 export const Sidebar = ({ open = false, onClose }) => {
@@ -10,7 +10,7 @@ export const Sidebar = ({ open = false, onClose }) => {
   // While the role is unknown, only show items every role can access to
   // avoid a flash of admin-only links.
   const visibleItems = NAV_ITEMS.filter((item) =>
-    isLoading || !role ? item.roles.length === 4 : item.roles.includes(role)
+    isLoading || !role ? item.roles.length === 4 : hasRole(role, item.roles)
   );
 
   const content = (

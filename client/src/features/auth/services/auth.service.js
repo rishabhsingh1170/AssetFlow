@@ -42,9 +42,9 @@ export const authService = {
 
       if (error) throw error;
 
-      // Query profiles table from Supabase for role checks
+      // Query app_users table from Supabase for role checks
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("app_users")
         .select("*")
         .eq("id", data.user.id)
         .single();
@@ -117,7 +117,7 @@ export const authService = {
       }
 
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("app_users")
         .select("*")
         .eq("id", session.user.id)
         .single();
