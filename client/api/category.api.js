@@ -24,3 +24,13 @@ export const updateCategory = (id, categoryData) => {
 export const deleteCategory = (id) => {
     return api.delete(`/categories/${id}`);
 };
+
+export const categoryApi = {
+    createCategory,
+    deleteCategory,
+    getCategories,
+    getCategoryById,
+    updateCategory,
+};
+
+export default categoryApi;
