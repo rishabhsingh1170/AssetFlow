@@ -9,7 +9,15 @@ const {
     uuid,
 } = require("./common.validation");
 
-const bookingStatuses = ["upcoming", "ongoing", "completed", "cancelled"];
+const bookingStatuses = [
+    "requested",
+    "approved",
+    "rejected",
+    "upcoming",
+    "ongoing",
+    "completed",
+    "cancelled",
+];
 
 const idParam = {
     params: {
@@ -36,7 +44,7 @@ const createBooking = {
     body: {
         fields: {
             assetId: [required("Asset ID"), uuid("Asset ID")],
-            bookedBy: [optional(uuid("Booked by user ID"))],
+            bookedBy: [required("Booked by user ID"), uuid("Booked by user ID")],
             departmentId: [optional(uuid("Department ID"))],
             startsAt: [required("Start time"), dateTime("Start time")],
             endsAt: [
@@ -70,8 +78,13 @@ const updateBooking = {
             status: [optional(oneOf(bookingStatuses, "Booking status"))],
             purpose: [optional(string("Purpose", { max: 500 }))],
             cancelledBy: [optional(uuid("Cancelled by user ID"))],
+            startsAt: [optional(dateTime("Start time"))],
+            endsAt: [
+                optional(dateTime("End time")),
+                afterField("startsAt", "End time"),
+            ],
         },
-        rules: [atLeastOne(["status", "purpose", "cancelledBy"])],
+        rules: [atLeastOne(["status", "purpose", "cancelledBy", "startsAt", "endsAt"])],
     },
 };
 
