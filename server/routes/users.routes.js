@@ -2,15 +2,27 @@ const express = require("express");
 const router = express.Router();
 
 const userController = require("../controller/user.controller");
+const { authenticate } = require("../middlewares/auth.middleware");
+const {
+    allowSelfOrRoles,
+    requireAdmin,
+    requireManagerRole,
+} = require("../middlewares/role.middleware");
 
-router.get("/", userController.getAllUsers);
+router.use(authenticate);
 
-router.get("/:id", userController.getUserById);
+router.get("/", requireManagerRole, userController.getAllUsers);
 
-router.post("/", userController.createUser);
+router.get(
+    "/:id",
+    allowSelfOrRoles("id", "asset_manager", "department_head"),
+    userController.getUserById
+);
 
-router.put("/:id", userController.updateUser);
+router.post("/", requireAdmin, userController.createUser);
 
-router.delete("/:id", userController.deleteUser);
+router.put("/:id", allowSelfOrRoles("id", "asset_manager"), userController.updateUser);
+
+router.delete("/:id", requireAdmin, userController.deleteUser);
 
 module.exports = router;

@@ -6,6 +6,7 @@ app.use(express.json());
 const departmentRoutes = require("./routes/departments.routes");
 const categoryRoutes = require("./routes/categories.routes");
 const userRoutes = require("./routes/users.routes");
+const authRoutes = require("./routes/auth.routes");
 const assetRoutes = require("./routes/assets.routes");
 const locationRoutes = require("./routes/locations.routes");
 const bookingRoutes = require("./routes/booking.routes");
@@ -14,6 +15,7 @@ const dashboardRoutes = require("./routes/dashboard.routes");
 const reportRoutes = require("./routes/reports.routes");
 const auditRoutes = require("./routes/audit.routes");
 
+app.use("/api/auth", authRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
