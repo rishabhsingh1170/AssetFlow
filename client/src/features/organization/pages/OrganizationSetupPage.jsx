@@ -170,12 +170,12 @@ export const OrganizationSetupPage = () => {
   const handleRolePromotionSubmit = async (newRole) => {
     try {
       await dispatch(promoteEmployee({ id: targetEmployee.id, role: newRole })).unwrap();
-      setIsRoleModalOpen(false);
-      setTargetEmployee(null);
-      // Reload department head names to keep state synchronized
+      // Reload lists to keep state synchronized
       dispatch(fetchDepartments());
+      dispatch(fetchEmployees());
     } catch (err) {
       console.error("Role promotion failed", err);
+      throw err;
     }
   };
 
@@ -272,14 +272,20 @@ export const OrganizationSetupPage = () => {
       {/* Promote Employee Role Modal */}
       <Modal
         isOpen={isRoleModalOpen}
-        onClose={() => setIsRoleModalOpen(false)}
+        onClose={() => {
+          setIsRoleModalOpen(false);
+          setTargetEmployee(null);
+        }}
         title="Change staff role"
         size="lg"
       >
         <PromoteRoleModal
           employee={targetEmployee}
           onSubmit={handleRolePromotionSubmit}
-          onClose={() => setIsRoleModalOpen(false)}
+          onClose={() => {
+            setIsRoleModalOpen(false);
+            setTargetEmployee(null);
+          }}
           submitLoading={empState.submitLoading}
           submitError={empState.submitError}
         />

@@ -3,18 +3,32 @@ import Card from "../../../components/ui/Card";
 import Button from "../../../components/ui/Button";
 import Spinner from "../../../components/ui/Spinner";
 import { getDashboardSummary } from "../../../../api/dashboard.api";
+import { useRole } from "../../../hooks/useRole";
 
 export const DashboardPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { isEmployee, isDepartmentHead, profile } = useRole();
 
   useEffect(() => {
     let mounted = true;
 
     const fetchSummary = async () => {
       try {
-        const response = await getDashboardSummary();
+        const params = {};
+        if (isEmployee) {
+          params.scope = "personal";
+          params.user_id = profile?.id;
+        } else if (isDepartmentHead) {
+          params.scope = "department";
+          params.department_id = profile?.department_id || profile?.departmentId;
+        } else {
+          params.scope = "organization";
+        }
+
+        // TODO(rbac): Integrate dynamic backend query scoping when the dashboard slice/service supports scoped summaries.
+        const response = await getDashboardSummary(params);
         if (mounted) {
           setData(response.data);
           setLoading(false);
@@ -33,7 +47,7 @@ export const DashboardPage = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [isEmployee, isDepartmentHead, profile]);
 
   if (loading) {
     return (

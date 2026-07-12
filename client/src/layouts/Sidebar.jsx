@@ -14,6 +14,20 @@ import {
   LogOut,
 } from "lucide-react";
 import { authService } from "../features/auth/services/auth.service";
+import { NAV_CONFIG } from "../constants/navConfig";
+import { hasRole } from "../hooks/useRole";
+
+const iconMap = {
+  "layout-dashboard": LayoutDashboard,
+  "settings": Settings,
+  "box": Package,
+  "arrows-left-right": ArrowLeftRight,
+  "calendar": Calendar,
+  "tool": Wrench,
+  "clipboard-check": ClipboardCheck,
+  "chart-bar": BarChart3,
+  "bell": Bell,
+};
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
@@ -21,19 +35,11 @@ export const Sidebar = () => {
 
   const { profile } = useSelector((state) => state.auth);
   const fullName = profile?.full_name || profile?.fullName || "Active User";
-  const userRole = profile?.role || "Employee";
+  const userRole = profile?.role || "employee";
 
-  const navItems = [
-    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Organization setup", path: "/organization-setup", icon: Settings },
-    { name: "Assets", path: "/assets", icon: Package },
-    { name: "Allocation & Transfer", path: "/allocation-transfer", icon: ArrowLeftRight },
-    { name: "Resource Booking", path: "/resource-booking", icon: Calendar },
-    { name: "Maintenance", path: "/maintenance", icon: Wrench },
-    { name: "Audit", path: "/audit", icon: ClipboardCheck },
-    { name: "Reports", path: "/reports", icon: BarChart3 },
-    { name: "Notifications", path: "/notifications", icon: Bell },
-  ];
+  const visibleNavItems = NAV_CONFIG.filter((item) =>
+    hasRole(userRole, item.roles)
+  );
 
   const handleLogout = async () => {
     try {
@@ -71,11 +77,11 @@ export const Sidebar = () => {
 
       {/* Navigation List */}
       <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
+        {visibleNavItems.map((item) => {
+          const Icon = iconMap[item.icon];
           return (
             <NavLink
-              key={item.name}
+              key={item.label}
               to={item.path}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-default text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
@@ -85,8 +91,8 @@ export const Sidebar = () => {
                 }`
               }
             >
-              <Icon size={16} />
-              <span>{item.name}</span>
+              {Icon && <Icon size={16} />}
+              <span>{item.label}</span>
             </NavLink>
           );
         })}
