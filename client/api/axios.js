@@ -7,6 +7,20 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to inject Authorization header
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Flag to easily toggle mocking on and off
 const ENABLE_MOCKS = true;
 

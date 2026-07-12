@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 
-export const LoginForm = ({ onSubmit, submitLoading, error, onMockLogin }) => {
+export const LoginForm = ({ onSubmit, submitLoading, error }) => {
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ export const LoginForm = ({ onSubmit, submitLoading, error, onMockLogin }) => {
         </div>
       )}
 
-      {/* Email field */}
+      {/* Email input field */}
       <Input
         label="Email"
         id="login-email"
@@ -35,7 +35,7 @@ export const LoginForm = ({ onSubmit, submitLoading, error, onMockLogin }) => {
         })}
       />
 
-      {/* Password field */}
+      {/* Password input field */}
       <div className="space-y-1">
         <Input
           label="Password"
@@ -60,19 +60,6 @@ export const LoginForm = ({ onSubmit, submitLoading, error, onMockLogin }) => {
       >
         Sign In
       </Button>
-
-      {/* Mock login bypass button for developer hackathon use */}
-      {onMockLogin && (
-        <div className="pt-2">
-          <Button
-            variant="secondary"
-            onClick={onMockLogin}
-            className="w-full font-bold uppercase tracking-wider text-[11px] py-2 border-dashed border-accent-400/40 text-accent-400 bg-[rgba(232,163,61,0.03)] hover:bg-[rgba(232,163,61,0.08)] transition-all duration-200"
-          >
-            Bypass & Demo (Mock Admin)
-          </Button>
-        </div>
-      )}
     </form>
   );
 };

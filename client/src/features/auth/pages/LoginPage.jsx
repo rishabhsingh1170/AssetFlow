@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 import Card from "../../../components/ui/Card";
-import { loginUser, signupUser, setMockAdminSession, clearError } from "../auth.slice";
+import { authService } from "../services/auth.service";
+import { clearError } from "../auth.slice";
 
 export const LoginPage = () => {
   const dispatch = useDispatch();
@@ -20,15 +21,22 @@ export const LoginPage = () => {
   }, [user, navigate]);
 
   const handleLoginSubmit = async (data) => {
-    dispatch(loginUser({ email: data.email, password: data.password }));
+    try {
+      await authService.login({ email: data.email, password: data.password }, dispatch);
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   };
 
   const handleSignupSubmit = async (data) => {
-    dispatch(signupUser({ email: data.email, password: data.password, fullName: data.fullName }));
-  };
-
-  const handleMockLogin = () => {
-    dispatch(setMockAdminSession());
+    try {
+      await authService.signup(
+        { email: data.email, password: data.password, fullName: data.fullName },
+        dispatch
+      );
+    } catch (err) {
+      console.error("Signup failed:", err);
+    }
   };
 
   const toggleMode = () => {
@@ -53,7 +61,6 @@ export const LoginPage = () => {
             onSubmit={handleLoginSubmit}
             submitLoading={loading}
             error={error}
-            onMockLogin={handleMockLogin}
           />
         ) : (
           <SignupForm

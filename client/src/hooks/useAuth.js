@@ -1,73 +1,25 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../api/supabase";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authService } from "../features/auth/services/auth.service";
 
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { user, profile, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    let mounted = true;
-
-    const fetchSessionAndProfile = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        
-        if (session && mounted) {
-          setUser(session.user);
-          const { data, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-
-          if (!error && mounted) {
-            setProfile(data);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching session and profile:", err);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchSessionAndProfile();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-      if (session) {
-        setUser(session.user);
-        const { data } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
-        setProfile(data);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token && !user && !loading) {
+      authService.getCurrentUser(dispatch).catch((err) => {
+        console.warn("Failed to restore session from token:", err);
+      });
+    }
+  }, [dispatch, user, loading]);
 
   return {
     user,
     profile,
     loading,
-    role: profile?.role || null,
+    role: profile?.role || user?.role || null,
     isAuthenticated: !!user,
   };
 };
