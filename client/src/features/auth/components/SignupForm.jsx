@@ -57,15 +57,6 @@ export const SignupForm = ({ onSubmit, submitLoading, error }) => {
         })}
       />
 
-      {/* Note about employee account and admin assignment */}
-      <div className="bg-surface-2 border border-border rounded-default p-3 text-[11px] text-text-secondary leading-relaxed select-none">
-        <span className="font-semibold text-text-primary uppercase tracking-wider block mb-1">
-          New here?
-        </span>
-        Sign up creates an employee account <br />
-        admin roles assigned later
-      </div>
-
       {/* Create Account Button */}
       <Button
         type="submit"
